@@ -20,7 +20,7 @@ func (s *ConcurrenceStore) Book(b Booking) error {
 	if _, exists := s.bookings[b.SeatID]; exists {
 		return ErrSeatAlreadyBooked
 	}
-	
+
 	s.bookings[b.SeatID] = b
 	return nil
 }
@@ -28,7 +28,7 @@ func (s *ConcurrenceStore) Book(b Booking) error {
 func (s *ConcurrenceStore) ListBookings(movieID string) []Booking {
 	s.RLock()
 	defer s.RUnlock()
-	
+
 	var result []Booking
 	for _, b := range s.bookings {
 		if b.MovieID == movieID {

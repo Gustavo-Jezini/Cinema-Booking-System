@@ -14,7 +14,7 @@ func (s *MemoryStore) Book(b Booking) error {
 	if _, exists := s.bookings[b.SeatID]; exists {
 		return ErrSeatAlreadyBooked
 	}
-	
+
 	s.bookings[b.SeatID] = b
 	return nil
 }
