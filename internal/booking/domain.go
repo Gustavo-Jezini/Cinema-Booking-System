@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	ErrSeatAlreadyBooked = errors.New("Seat is already taken")
+	ErrSeatAlreadyBooked = errors.New("seat is already taken")
+	ErrUnauthorized      = errors.New("user does not own this session")
 )
 
 // Booking represents a confirmed seat reservation.

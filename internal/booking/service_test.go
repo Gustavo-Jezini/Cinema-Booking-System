@@ -1,17 +1,27 @@
 package booking
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
 	"testing"
 
-	"cinema-booking-system/internal/adapters/redis"
+	goredis "github.com/redis/go-redis/v9"
 
 	"github.com/google/uuid"
 )
 
 func TestConcurrentBooking_ExactlyOneWins(t *testing.T) {
-	store := NewRedisStore(redis.NewClient("localhost:6379"))
+	rdb := goredis.NewClient(&goredis.Options{Addr: "localhost:6379"})
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
+		t.Skipf("redis not available: %v", err)
+	}
+
+	const seatKey = "seat:screen-1:A1"
+	rdb.Del(context.Background(), seatKey)
+	t.Cleanup(func() { rdb.Del(context.Background(), seatKey) })
+
+	store := NewRedisStore(rdb)
 	svc := NewService(store)
 
 	const numGoroutines = 100_000 // 100k users trying to book a seat at the same time
